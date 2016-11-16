@@ -14,20 +14,30 @@ jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
 #### Steve Huffman's template framework
 #### set up for use with jinja
 
+def render_str(template, **params):
+    t = jinja_env.get_template(template)
+    return t.render(params)
+
 class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
     def render_str(self, template, **params):
-        t = jinja_env.get_template(template)
-        return t.render(params)
+        return render_str(template, **params)
 
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+def render_post(response, post):
+    response.out.write('<b>' + post.subject + '</b><br>')
+    response.out.write(post.content)
+
+
+
 class MainPage(BlogHandler):
     def get(self):
         self.write('hello')
+
 
 
 #### blog stuff
@@ -54,7 +64,7 @@ class BlogFront(BlogHandler):
     """looks up all the blog posts by time created
     and renders front.html with result of post query"""
     def get(self):
-        posts = db.GqlQuery("SELECT * FROM POST ORDER BY CREATED DESC LIMIT 10")
+        posts = db.GqlQuery("select * from Post order by created desc limit 10")
         self.render('front.html', posts = posts)
 
 class PostPage(BlogHandler):
@@ -86,7 +96,8 @@ class NewPost(BlogHandler):
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
             error = 'You did not enter subject or content!'
-            self.render("newpost.html", subject = subject, content = content, error = error)
+            self.render("newpost.html", subject = subject, content = content,
+                        error = error)
 
 
 # 0-9 + syntax is regular expression for describing a integer in app engine

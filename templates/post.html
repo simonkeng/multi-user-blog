@@ -8,9 +8,8 @@
             {{p.created.strftime("%b %d, %Y")}}
         </div>
     </div>
-    <hr>
     <div class="post-content">
-        {{p.render_text | safe}}
+        {{p._render_text | safe}}
     </div>
 
 </div>
