@@ -1,0 +1,24 @@
+body {
+    font-family: 'Cutive Mono', monospace;
+    font-size: 16px;
+
+    width: 800px;
+    margin: 0 auto;
+    padding: 10px;
+    background-color: #F4F7ED;
+}
+
+.text-muted {
+    color: #BCBBBB;
+}
+.text-thin {
+    font-weight: 100;
+}
+
+.title-super {
+    font-size: 80px;
+}
+
+.title-logo {
+    margin-top: 20px;
+}
