@@ -1,62 +1,80 @@
 <!DOCTYPE html>
+
+
 <html>
-<head>
-    <title>Sign Up</title>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <title>Sign Up</title>
 
-</head>
-<body>
-    <h2>Sign up</h2>
-    <form method="post">
-        <table>
-            <tr>
-                <td class="label">
-                    Username
-                </td>
-                <td>
-                    <input type="text" name="username" value="{{username}}">
-                </td>
-                <td class="error">
-                    {{error_username}}
-                </td>
-            </tr>
-            <tr>
-                <td class="label">
-                    Password
-                </td>
-                <td>
-                    <input type="password" name="password" value="">
-                </td>
-                <td class="error">
-                    {{error_password}}
-                </td>
-            </tr>
+    </head>
+    <body>
+        <div class="container">
+            <h2>Sign up</h2>
+                <div class="row">
+                    <a href="/blog">Home</a>
+                </div>
+            <form method="post">
+                <table>
+                    <tr>
+                        <td class="label">
+                            Username
+                        </td>
+                        <td>
+                            <input type="text" name="username" value="{{username}}">
+                        </td>
+                        <td class="error">
+                            {{error_username}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">
+                            Password
+                        </td>
+                        <td>
+                            <input type="password" name="password" value="">
+                        </td>
+                        <td class="error">
+                            {{error_password}}
+                        </td>
+                    </tr>
 
-            <tr>
-                <td class="label">
-                    Verify Password
-                </td>
-                <td>
-                    <input type="password" name="verify" value="">
-                </td>
-                <td class="error">
-                    {{error_verify}}
-                </td>
-            </tr>
+                    <tr>
+                        <td class="label">
+                            Verify Password
+                        </td>
+                        <td>
+                            <input type="password" name="verify" value="">
+                        </td>
+                        <td class="error">
+                            {{error_verify}}
+                        </td>
+                    </tr>
 
-            <tr>
-                <td class="label">
-                    Email (optional)
-                </td>
-                <td>
-                    <input type="text" name="email" value="{{email}}">
-                </td>
-                <td class="error">
-                    {{error_email}}
-                </td>
-            </tr>
-        </table>
-        <input type="submit">
-    </form>
-</body>
+                    <tr>
+                        <td class="label">
+                            Email (optional)
+                        </td>
+                        <td>
+                            <input type="text" name="email" value="{{email}}">
+                        </td>
+                        <td class="error">
+                            {{error_email}}
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit">
+            </form>
+        </div>
+    </body>
 </html>

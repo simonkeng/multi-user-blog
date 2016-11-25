@@ -4,11 +4,11 @@
         <meta charset="UTF-8">
         <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" type="text/css" href="/css/main.css">
         <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="/css/style.css">
+         <link rel="stylesheet" type="text/css" href="/css/main.css">
         <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <title>MUB Home</title>
@@ -26,26 +26,33 @@
 
             </header>
             <div class="row">
-                <div class="col-md-3">
-                    <a href="/login">
-                        Login
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="/logout">
-                        Logout
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="/blog/newpost">
-                        Newpost
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a href="/signup">
-                        Sign up
-                    </a>
-                </div>
+                {% if not user %}
+                    <p>Please sign in, or sign up!</p>
+                    <div class="col-md-3">
+                        <a href="/login">
+                            Login
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="/signup">
+                            Sign up
+                        </a>
+                    </div>
+                {% else %}
+                    <p>Logged in as: {{user}}</p>
+                    <div class="col-md-3">
+                        <a href="/logout">
+                            Logout
+                        </a>
+                    </div>
+
+                    <div class="col-md-3">
+                        <a href="/blog/newpost">
+                            Newpost
+                        </a>
+                    </div>
+                {% endif %}
 
             </div>
         </div>

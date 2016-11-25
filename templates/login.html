@@ -1,40 +1,64 @@
 <!DOCTYPE html>
-
 <html>
-<head>
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <title>Login</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+        <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <title>Login</title>
 
-</head>
+    </head>
 
-<body>
-    <h2>Login</h2>
-    <a href="/blog">Home</a>
-    <form method="post">
-        <table>
-            <tr>
-                <td class="label">
-                    Username
-                </td>
-                <td>
-                    <input type="text" name="username" value="{{username}}">
-                </td>
-            </tr>
+    <body>
+        <div class="container">
+            <h2>Login</h2>
+            <p>Don't have an account?</p>
+            <div class="row">
+                <a href="/signup">
+                    Sign Up
+                </a>
+            </div>
+            <p>or</p>
+            <div class="row">
+                <a href="/blog">
+                    Go Home!
+                </a>
+            </div>
+            </div>
+            <form method="post">
+                <table>
+                    <tr>
+                        <td class="label">
+                            Username
+                        </td>
+                        <td>
+                            <input type="text" name="username" value="{{username}}">
+                        </td>
+                    </tr>
 
-            <tr>
-                <td class="label">
-                    Password
-                </td>
-                <td>
-                    <input type="password" name="password" value="">
-                </td>
-            </tr>
-        </table>
-        <div class="error">
-            {{error}}
+                    <tr>
+                        <td class="label">
+                            Password
+                        </td>
+                        <td>
+                            <input type="password" name="password" value="">
+                        </td>
+                    </tr>
+                </table>
+                <div class="error">
+                    {{error}}
+                </div>
+                <input type="submit">
+            </form>
         </div>
-        <input type="submit">
-    </form>
-</body>
+    </body>
 
 </html>
