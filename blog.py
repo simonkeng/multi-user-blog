@@ -18,7 +18,6 @@ secret = '0a5d17d3b19f82f8340d3977609aa9e86b4ad8b'
 
 # Steve Huffman's template framework
 
-
 def render_str(template, **params):
     t = jinja_env.get_template(template)
     return t.render(params)
@@ -104,7 +103,6 @@ def users_key(group='default'):
 
 # user object to be stored in db
 
-
 class User(db.Model):
     name = db.StringProperty(required=True)
     pw_hash = db.StringProperty(required=True)
@@ -149,6 +147,9 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
+    # author = db.StringProperty(required=True)
+    # likes = db.IntegerProperty(required=True)
+    # liked_by = db.ListProperty(str)
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
@@ -156,6 +157,20 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self)
 
+###### WIP ######
+    # @property
+    # def comments(self):
+    #     return Comment.all().filter("post = ", str(self.key().id()))
+
+
+# class Comment(db.Model):
+#     comment = db.StringProperty(required=True)
+#     post = db.StringProperty(required=True)
+#     author = db.StringProperty(required=True)
+
+#     @classmethod
+#     def render(self):
+#         self.render("comment.html")
 
 class BlogFront(BlogHandler):
     """looks up all the blog posts by time created
@@ -321,6 +336,7 @@ class Unit3Welcome(BlogHandler):
             self.redirect('/signup')
 
 
+###### still need?? ######
 # class Welcome(BlogHandler):
 
 #     def get(self):

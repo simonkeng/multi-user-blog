@@ -11,23 +11,23 @@
          <link rel="stylesheet" type="text/css" href="/css/main.css">
         <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
-        <title>MUB Home</title>
+        <title>Mords Blog</title>
     </head>
 
     <body>
         <div class="container">
             <header class="row">
                     <a href="/blog" class="main-title">
-                        I luv MUBs
+                        Mordium's Blog
                     </a>
                     <div class="row">
-                    <h3>if you luv multi user blogs say wut wut</h3>
+                    <h3>Death metal, avant-garde, science and alike.</h3>
                     </div>
 
             </header>
             <div class="row">
                 {% if not user %}
-                    <p>Please sign in, or sign up!</p>
+                    <div class="row"><p>Please sign in, or sign up!</p></div>
                     <div class="col-md-3">
                         <a href="/login">
                             Login
@@ -40,7 +40,7 @@
                         </a>
                     </div>
                 {% else %}
-                    <p>Logged in as: {{user}}</p>
+                    <div class="row"><p>Logged in as: {{user}}</p></div>
                     <div class="col-md-3">
                         <a href="/logout">
                             Logout
