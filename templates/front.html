@@ -3,9 +3,13 @@
 {% block content %}
 
     {% for p in posts %}
+        <a href="/blog/editpost">Edit</a>
         {{ p.render() | safe }}
+
         <br>
         <br>
+
+
     {% endfor %}
 
 {% endblock %}

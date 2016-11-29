@@ -302,6 +302,21 @@ class Register(Signup):
             self.redirect('/blog')
 
 
+class EditPost(BlogHandler):
+
+    def get(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        if not post:
+            self.error(404)
+            return
+
+        self.render("editpost.html", post=post)
+
+
+
+
 class Login(BlogHandler):
 
     def get(self):
@@ -356,6 +371,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
+                               ('/blog/editpost', EditPost),
                                ('/unit3/welcome', Unit3Welcome),
                                ],
                               debug=True)
