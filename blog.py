@@ -318,6 +318,8 @@ class EditPost(BlogHandler):
         self.render("editpost.html", post=post)
 
     def post(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
         if not self.user:
             return self.redirect('/signup')
         subject = self.request.get('subject')
@@ -325,16 +327,19 @@ class EditPost(BlogHandler):
 
         if subject and content:
             # p = Post(parent=blog_key(), subject=subject, content=content)
-            p = db.get(post)
-            p.subject = subject
-            p.content = content
-            p.put()
+            # p = db.get(post)
+            post.subject = subject
+            post.content = content
+            post.put()
 
-            self.redirect('/blog/%s' % str(p.key().id()))
+            self.redirect('/blog/%s' % str(post.key().id()))
         else:
             error = 'You did not enter subject or content!'
             self.render("newpost.html", subject=subject, content=content,
                         error=error)
+
+
+###################################################
 
 
 class DeletePost(BlogHandler):
@@ -346,19 +351,14 @@ class DeletePost(BlogHandler):
         else:
             self.render('deletepost.html', post_id=id)
 
-    def post(self, id):
+    def post(self, post_id):
         if self.user:
-            # post_id = self.request.get("post")
             key = db.Key.from_path("Post", int(post_id), parent=blog_key())
             post = db.get(key)
 
-            post.delete(key)
+            post.delete()
             self.redirect('/blog/')
 
-
-
-
-###################################################
 
 
 class Login(BlogHandler):
