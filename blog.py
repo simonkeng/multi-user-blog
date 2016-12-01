@@ -150,7 +150,7 @@ class Post(db.Model):
     # user_id = db.IntegerProperty(required=True)
     # author = db.StringProperty(required=True)
     # likes = db.IntegerProperty(required=True)
-    # liked_by = db.ListProperty(str)
+    # liked_by = db.ListProperty()
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
@@ -302,8 +302,6 @@ class Register(Signup):
             self.login(u)
             self.redirect('/blog')
 
-########### WIP #############
-
 
 class EditPost(BlogHandler):
 
@@ -339,10 +337,8 @@ class EditPost(BlogHandler):
                         error=error)
 
 
-###################################################
-
-
 class DeletePost(BlogHandler):
+
     def get(self, post_id):
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         post = db.get(key)
@@ -373,7 +369,7 @@ class Login(BlogHandler):
         u = User.login(username, password)
         if u:
             self.login(u)
-            self.redirect('/unit3/welcome')
+            self.redirect('/blog/welcome')
         else:
             msg = 'Invalid login'
             self.render('login.html', error=msg)
@@ -386,7 +382,7 @@ class Logout(BlogHandler):
         self.redirect('/blog')
 
 
-class Unit3Welcome(BlogHandler):
+class BlogWelcome(BlogHandler):
 
     def get(self):
         if self.user:
@@ -395,18 +391,6 @@ class Unit3Welcome(BlogHandler):
             self.redirect('/signup')
 
 
-###### still need?? ######
-# class Welcome(BlogHandler):
-
-#     def get(self):
-#         username = self.request.get('username')
-#         if valid_username(username):
-#             self.render('welcome.html', username=username)
-#         else:
-#             self.redirect('/signup')
-
-# 0-9 + syntax is regular expression for describing a integer in app engine
-# will be passed into PostPage as a integer
 
 app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/?', BlogFront),
@@ -417,11 +401,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/logout', Logout),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
-                               ('/unit3/welcome', Unit3Welcome),
+                               ('/blog/welcome', BlogWelcome),
                                ],
                               debug=True)
 
-# Renee's suggestion:
-# (r'/blog/editpost/(\d+)', EditPost),
-# then in front.html I would do
-# <a href="{{'/blog/editpost/%s' % id}}">Edit</a>
