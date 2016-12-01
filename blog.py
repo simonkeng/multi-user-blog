@@ -147,6 +147,7 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
+    # user_id = db.IntegerProperty(required=True)
     # author = db.StringProperty(required=True)
     # likes = db.IntegerProperty(required=True)
     # liked_by = db.ListProperty(str)
@@ -301,6 +302,8 @@ class Register(Signup):
             self.login(u)
             self.redirect('/blog')
 
+########### WIP #############
+
 
 class EditPost(BlogHandler):
 
@@ -314,7 +317,48 @@ class EditPost(BlogHandler):
 
         self.render("editpost.html", post=post)
 
+    def post(self, post_id):
+        if not self.user:
+            return self.redirect('/signup')
+        subject = self.request.get('subject')
+        content = self.request.get('content')
 
+        if subject and content:
+            # p = Post(parent=blog_key(), subject=subject, content=content)
+            p = db.get(post)
+            p.subject = subject
+            p.content = content
+            p.put()
+
+            self.redirect('/blog/%s' % str(p.key().id()))
+        else:
+            error = 'You did not enter subject or content!'
+            self.render("newpost.html", subject=subject, content=content,
+                        error=error)
+
+
+class DeletePost(BlogHandler):
+    def get(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+        if not self.user:
+            self.redirect("/login")
+        else:
+            self.render('deletepost.html', post_id=id)
+
+    def post(self, id):
+        if self.user:
+            # post_id = self.request.get("post")
+            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+            post = db.get(key)
+
+            post.delete(key)
+            self.redirect('/blog/')
+
+
+
+
+###################################################
 
 
 class Login(BlogHandler):
@@ -371,7 +415,13 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/signup', Register),
                                ('/login', Login),
                                ('/logout', Logout),
-                               ('/blog/editpost', EditPost),
+                               ('/blog/([0-9]+)/editpost', EditPost),
+                               ('/blog/([0-9]+)/deletepost', DeletePost),
                                ('/unit3/welcome', Unit3Welcome),
                                ],
                               debug=True)
+
+# Renee's suggestion:
+# (r'/blog/editpost/(\d+)', EditPost),
+# then in front.html I would do
+# <a href="{{'/blog/editpost/%s' % id}}">Edit</a>

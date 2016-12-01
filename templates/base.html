@@ -8,58 +8,70 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:100,300" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="/css/style.css">
-         <link rel="stylesheet" type="text/css" href="/css/main.css">
+        <link rel="stylesheet" type="text/css" href="/css/main.css">
         <script type="text/javascript" src="js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>
-        <title>Mords Blog</title>
+        <title>Simon's Blog</title>
     </head>
 
     <body>
         <div class="container">
-            <header class="row">
-                    <a href="/blog" class="main-title">
-                        Mordium's Blog
-                    </a>
-                    <div class="row">
-                    <h3>Death metal, avant-garde, science and alike.</h3>
-                    </div>
-
-            </header>
             <div class="row">
+                <div class="col-md-12">
+                    <a href="/blog" class="main-title">
+                        Simon's Blog
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>science, music, avant-garde.</h3>
+                </div>
+            </div>
+
+            <div class="container">
                 {% if not user %}
                     <div class="row"><p>Please sign in, or sign up!</p></div>
-                    <div class="col-md-3">
-                        <a href="/login">
-                            Login
-                        </a>
-                    </div>
+                        <div class="col-md-3">
+                            <a href="/login">
+                                Login
+                            </a>
+                        </div>
 
-                    <div class="col-md-3">
-                        <a href="/signup">
-                            Sign up
-                        </a>
-                    </div>
+                        <div class="col-md-3">
+                            <a href="/signup">
+                                Sign up
+                            </a>
+                        </div>
                 {% else %}
-                    <div class="row"><p>Logged in as: {{user}}</p></div>
-                    <div class="col-md-3">
-                        <a href="/logout">
-                            Logout
-                        </a>
-                    </div>
+                    <div class="row">
+                        <p>Logged in as: {{user}}</p>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="/logout">
+                                    Logout
+                                </a>
+                            </div>
 
-                    <div class="col-md-3">
-                        <a href="/blog/newpost">
-                            Newpost
-                        </a>
+                            <div class="col-md-3">
+                                <a href="/blog/newpost">
+                                    Newpost
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 {% endif %}
 
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="content">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="content">
-            {% block content %}
 
-            {% endblock %}
-        </div>
     </body>
 </html>
