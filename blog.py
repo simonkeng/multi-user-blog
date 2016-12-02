@@ -148,9 +148,9 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
-    author = db.StringProperty(required=True)
-    likes = db.IntegerProperty(required=True)
-    liked_by = db.ListProperty(str)
+    # author = db.StringProperty(required=True)
+    # likes = db.IntegerProperty(required=True)
+    # liked_by = db.ListProperty(str)
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up

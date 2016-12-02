@@ -36,12 +36,128 @@ label + label {
     margin-top: 20px;
 }
 
-input[type=text] {
+/*a {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #f4511e;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+a:hover {
+
+}
+*/
+a {
+    display: inline-block;
+    border-radius: 12px;
+    background-color: #86EE60;
+    border: none;
+    color: #2B3752;
+    text-align: center;
+    font-size: 28px;
+    padding: 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    background: #86EE60;
+    -webkit-transition-property: background;
+       -moz-transition-property: background;
+         -o-transition-property: background;
+            transition-property: background;
+    -webkit-transition-duration: 1s;
+       -moz-transition-duration: 1s;
+         -o-transition-duration: 1s;
+            transition-duration: 1s;
+    -webkit-transition-timing-function: linear;
+       -moz-transition-timing-function: linear;
+         -o-transition-timing-function: linear;
+            transition-timing-function: linear;
+}
+a:hover {
+  background: #F4F7ED;
+}
+
+.nav {
+    display: inline-block;
+    border-radius: 7px;
+    background-color: #86EE60;
+    border: none;
+    color: #2B3752;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    width: 100px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 4px;
+    background: #86EE60;
+    -webkit-transition-property: background;
+       -moz-transition-property: background;
+         -o-transition-property: background;
+            transition-property: background;
+    -webkit-transition-duration: 1s;
+       -moz-transition-duration: 1s;
+         -o-transition-duration: 1s;
+            transition-duration: 1s;
+    -webkit-transition-timing-function: linear;
+       -moz-transition-timing-function: linear;
+         -o-transition-timing-function: linear;
+            transition-timing-function: linear;
+}
+
+.nav-top {
+    display: inline-block;
+    border-radius: 12px;
+    background-color: #86EE60;
+    border: none;
+    color: #2B3752;
+    text-align: center;
+    font-size: 20px;
+    padding: 10px;
+    width: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+    margin: 5px;
+    background: #86EE60;
+    -webkit-transition-property: background;
+       -moz-transition-property: background;
+         -o-transition-property: background;
+            transition-property: background;
+    -webkit-transition-duration: 1s;
+       -moz-transition-duration: 1s;
+         -o-transition-duration: 1s;
+            transition-duration: 1s;
+    -webkit-transition-timing-function: linear;
+       -moz-transition-timing-function: linear;
+         -o-transition-timing-function: linear;
+            transition-timing-function: linear;
+}
+/*input[type=text] {
     width: 500px;
     font-size: 20px;
     padding: 2px;
     font-family: monospace;
     background-color: #F4F7ED;
+}*/
+
+input[type=submit] {
+    padding:5px 15px;
+    background:#2E6E65;
+    font-size: 24px;
+    color: white;
+    border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 7px;
 }
 
 textarea {
@@ -52,14 +168,17 @@ textarea {
   background-color: #F4F7ED;
 }
 
-input[type=submit] {
-  font-size: 24px;
+.band {
+    background-color: #2E6E65;
+    height: 400px;
+    border-radius: 7px;
+    border: none;
 }
 
 .main-title {
     display: block;
     color: #2B3752;
-    font-size: 40px;
+    font-size: 50px;
     font-weight: bold;
     margin-bottom: 5px;
     text-decoration: none;
@@ -71,13 +190,20 @@ input[type=submit] {
 
 .post-heading {
     position: relative;
-    border-bottom: 3px solid #2B3752;
+    border-bottom: 7px solid #2E6E65;
     font-family: 'Cutive Mono', monospace;
+    border-radius: 7px;
+    /*cursor: wait; <-- funny*/
+}
+
+.bot-cat {
+    font-size: 120px;
 }
 
 .post-title {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
+    color: #2B3752;
 }
 
 .post-date {
@@ -91,6 +217,8 @@ input[type=submit] {
 
 .post-content {
     margin-top: 5px;
+    border-color: #2E6E65;
+    border: 10px;
 }
 
 
