@@ -14,9 +14,9 @@ template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir),
                                autoescape=True)
 
-secret = '0a5d17d3b19f82f8340d3977609aa9e86b4ad8b'
+secret = 'super-dooper_really-really_secretsecret'
 
-# Steve Huffman's template framework
+### Steve Huffman's template framework
 
 def render_str(template, **params):
     t = jinja_env.get_template(template)
@@ -32,6 +32,7 @@ def check_secure_val(secure_val):
     if secure_val == make_secure_val(val):
         return val
 
+###
 
 class BlogHandler(webapp2.RequestHandler):
 
@@ -80,7 +81,7 @@ class MainPage(BlogHandler):
         self.write('hi folks! Welcome to Simon\'s crappy page')
 
 
-# user stuff
+### user stuff
 
 def make_salt(length=5):
     return ''.join(random.choice(letters) for x in xrange(length))
@@ -133,7 +134,7 @@ class User(db.Model):
             return u
 
 
-# blog stuff
+### blog stuff
 
 def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
@@ -147,10 +148,9 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
-    # user_id = db.IntegerProperty(required=True)
-    # author = db.StringProperty(required=True)
-    # likes = db.IntegerProperty(required=True)
-    # liked_by = db.ListProperty()
+    author = db.StringProperty(required=True)
+    likes = db.IntegerProperty(required=True)
+    liked_by = db.ListProperty(str)
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
@@ -357,6 +357,39 @@ class DeletePost(BlogHandler):
 
 
 
+class LikePost(BlogHandler):
+
+    def post(self, post_id):
+        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        post.likes = post.likes + 1
+        post.liked_by.append(self.user.name)
+
+        if self.user.name != post.author:
+            post.put()
+            self.redirect('/blog')
+
+
+    # def get(self, post_id):
+    #     if not self.user:
+    #         self.redirect("/login")
+    #     else:
+    #         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+    #         post = db.get(key)
+    #         author = post.author
+    #         logged_user = self.user.name
+
+    #         if author == logged_user or logged_user in post.liked_by
+    #             self.redirect('/error')
+    #         else:
+    #             post.likes += 1
+    #             post.liked_by.append(logged_user)
+    #             post.put()
+    #             self.redirect('/blog')
+
+
+
 class Login(BlogHandler):
 
     def get(self):
@@ -401,6 +434,8 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/logout', Logout),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
+                               # ('/blog/newcomment', NewComment),
+                               ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],
                               debug=True)
