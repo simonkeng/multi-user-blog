@@ -54,7 +54,8 @@
                     </div>
                 {% else %}
                     <div class="row band-top">
-                        <p class="logged-in">Logged in as: {{user}}</p>
+                        <p class="logged-in">Logged in as: {{user.name}}</p>
+
                         <div class="row">
                             <div class="col-md-3">
                                 <a href="/logout" class="nav-top">

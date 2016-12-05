@@ -3,17 +3,21 @@
 {% block content %}
 
     {% for p in posts %}
-        <!-- {{p.author}}
-        {{p.likes}} -->
+
         {{ p.render() | safe }}
 
+        {{p.author}}
+        {{p.likes}}
+        <br>
             <a href="/blog/{{p.key().id()}}/editpost" class="nav">Edit</a>
 
             <a href="/blog/{{p.key().id()}}/deletepost" class="nav">Delete</a>
 
+
             <a href="/blog/newcomment" class="nav">Comment</a>
 
             <a href="/blog/{{p.key().id()}}/like" class="nav">Like</a>
+
 
 
         <br>

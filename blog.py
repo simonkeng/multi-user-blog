@@ -148,15 +148,29 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
-    # author = db.StringProperty(required=True)
-    # likes = db.IntegerProperty(required=True)
-    # liked_by = db.ListProperty(str)
+    author = db.StringProperty(required=True)
+
+
+    def post_likes(self, post_id):
+        kinds = metadata.get_kinds()
+        if u'PostLike' in kinds:
+            likes = db.GqlQuery("select * from PostLike where ancestor is 1:",
+                                post_key(post_id)).count()
+
+        else:
+            likes = 0
+        return likes
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
     def render(self):
+        likes = self.post_likes(post_id)
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p=self)
+        return render_str("post.html", p=self, likes=likes)
+
+class PostLike(db.Model):
+
+    like_user_id = db.StringProperty(required=True)
 
 ###### WIP ######
     # @property
@@ -172,6 +186,7 @@ class Post(db.Model):
 #     @classmethod
 #     def render(self):
 #         self.render("comment.html")
+
 
 class BlogFront(BlogHandler):
     """looks up all the blog posts by time created
@@ -209,9 +224,12 @@ class NewPost(BlogHandler):
             return self.redirect('/signup')
         subject = self.request.get('subject')
         content = self.request.get('content')
+        author = self.user.name
+        likes = 0
 
         if subject and content:
-            p = Post(parent=blog_key(), subject=subject, content=content)
+            p = Post(parent=blog_key(), author=author,
+                subject=subject, content=content, likes=likes)
             # p.put() to store p in the database
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
@@ -334,7 +352,7 @@ class EditPost(BlogHandler):
         else:
             error = 'You did not enter subject or content!'
             self.render("newpost.html", subject=subject, content=content,
-                        error=error)
+                        error=error, likes=likes, author=author)
 
 
 class DeletePost(BlogHandler):
@@ -357,18 +375,18 @@ class DeletePost(BlogHandler):
 
 
 
-class LikePost(BlogHandler):
+# class LikePost(BlogHandler):
 
-    def post(self, post_id):
-        key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        post = db.get(key)
+#     def post(self, post_id):
+#         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+#         post = db.get(key)
 
-        post.likes = post.likes + 1
-        post.liked_by.append(self.user.name)
+#         post.likes = post.likes + 1
+#         post.liked_by.append(self.user.name)
 
-        if self.user.name != post.author:
-            post.put()
-            self.redirect('/blog')
+#         if self.user.name != post.author:
+#             post.put()
+#             self.redirect('/blog')
 
 
     # def get(self, post_id):
@@ -435,7 +453,6 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
                                # ('/blog/newcomment', NewComment),
-                               ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],
                               debug=True)
