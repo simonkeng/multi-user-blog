@@ -148,25 +148,25 @@ class Post(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
-    author = db.StringProperty(required=True)
+    # author = db.StringProperty(required=True)
 
 
-    def post_likes(self, post_id):
-        kinds = metadata.get_kinds()
-        if u'PostLike' in kinds:
-            likes = db.GqlQuery("select * from PostLike where ancestor is 1:",
-                                post_key(post_id)).count()
+    # def post_likes(self, post_id):
+    #     kinds = metadata.get_kinds()
+    #     if u'PostLike' in kinds:
+    #         likes = db.GqlQuery("select * from PostLike where ancestor is 1:",
+    #                             post_key(post_id)).count()
 
-        else:
-            likes = 0
-        return likes
+    #     else:
+    #         likes = 0
+    #     return likes
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
     def render(self):
-        likes = self.post_likes(post_id)
+        # likes = self.post_likes(post_id)
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p=self, likes=likes)
+        return render_str("post.html", p=self) # likes=likes
 
 class PostLike(db.Model):
 
@@ -456,4 +456,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/welcome', BlogWelcome),
                                ],
                               debug=True)
+
+
+# http://colorhunt.co/c/42254
 
