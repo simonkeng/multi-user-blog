@@ -4,10 +4,11 @@
 
     {% for p in posts %}
 
+        {{p.like_count}}
+
         {{ p.render() | safe }}
 
         {{p.author}}
-        {{p.likes}}
         <br>
             <a href="/blog/{{p.key().id()}}/editpost" class="nav">Edit</a>
 

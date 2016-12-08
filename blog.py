@@ -78,7 +78,7 @@ def render_post(response, post):
 class MainPage(BlogHandler):
 
     def get(self):
-        self.write('hi folks! Welcome to Simon\'s crappy page')
+        self.render('enter.html')
 
 
 ### user stuff
@@ -140,26 +140,24 @@ def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
 
+
+# class Author(db.Model):
+#     name = db.StringProperty()
+
+
 class Post(db.Model):
     """define post class"""
     subject = db.StringProperty(required=True)
     content = db.TextProperty(required=True)
-    # time stamp for date time of created post
     created = db.DateTimeProperty(auto_now_add=True)
-    # time stamp to update the object, display last time updated
     last_modified = db.DateTimeProperty(auto_now=True)
-    # author = db.StringProperty(required=True)
+    likes = db.ReferenceProperty(required=True)
+    # author = db.ReferenceProperty(Author)
 
 
-    # def post_likes(self, post_id):
-    #     kinds = metadata.get_kinds()
-    #     if u'PostLike' in kinds:
-    #         likes = db.GqlQuery("select * from PostLike where ancestor is 1:",
-    #                             post_key(post_id)).count()
-
-    #     else:
-    #         likes = 0
-    #     return likes
+    @property
+    def like_count(likes):
+        return likes.length
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
@@ -168,24 +166,16 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self) # likes=likes
 
-class PostLike(db.Model):
 
-    like_user_id = db.StringProperty(required=True)
+###### moagm udacity mentor code
 
-###### WIP ######
-    # @property
-    # def comments(self):
-    #     return Comment.all().filter("post = ", str(self.key().id()))
+# class PostLike(db.Model):
+
+#     like_user_id = db.StringProperty(required=True)
 
 
-# class Comment(db.Model):
-#     comment = db.StringProperty(required=True)
-#     post = db.StringProperty(required=True)
-#     author = db.StringProperty(required=True)
+# parent=key of the post
 
-#     @classmethod
-#     def render(self):
-#         self.render("comment.html")
 
 
 class BlogFront(BlogHandler):
@@ -224,7 +214,7 @@ class NewPost(BlogHandler):
             return self.redirect('/signup')
         subject = self.request.get('subject')
         content = self.request.get('content')
-        author = self.user.name
+        # author = self.user.name
         likes = 0
 
         if subject and content:
@@ -375,36 +365,42 @@ class DeletePost(BlogHandler):
 
 
 
-# class LikePost(BlogHandler):
+class LikePost(BlogHandler):
 
-#     def post(self, post_id):
-#         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-#         post = db.get(key)
+    def get(self, post_id):
+        if not self.user:
+            self.redirect("/login")
+        else:
+            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+            post = db.get(key)
+            author = db.get(author_key)
 
-#         post.likes = post.likes + 1
-#         post.liked_by.append(self.user.name)
+            # logged_user = self.user.name
 
-#         if self.user.name != post.author:
-#             post.put()
-#             self.redirect('/blog')
+            post.likes.append(self.user)
 
+            post.put()
+            self.redirect('/blog')
 
-    # def get(self, post_id):
-    #     if not self.user:
-    #         self.redirect("/login")
-    #     else:
-    #         key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-    #         post = db.get(key)
-    #         author = post.author
-    #         logged_user = self.user.name
+# if author == logged_user or logged_user in post.liked_by
+            #     self.redirect('/error')
+            # else:
+            #     post.likes += 1
+            #     post.liked_by.append(logged_user)
+            #     post.put()
+            #     self.redirect('/blog')
 
-    #         if author == logged_user or logged_user in post.liked_by
-    #             self.redirect('/error')
-    #         else:
-    #             post.likes += 1
-    #             post.liked_by.append(logged_user)
-    #             post.put()
-    #             self.redirect('/blog')
+# def post(self, post_id):
+    #     key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+    #     post = db.get(key)
+
+    #     post.likes = post.likes + 1
+    #     post.liked_by.append(self.user.name)
+
+    #     if self.user.name:
+    #         post.put()
+    #         self.redirect('/blog')
+
 
 
 
@@ -453,6 +449,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
                                # ('/blog/newcomment', NewComment),
+                               ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],
                               debug=True)
