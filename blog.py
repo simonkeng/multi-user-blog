@@ -134,15 +134,12 @@ class User(db.Model):
             return u
 
 
+
 ### blog stuff
 
 def blog_key(name='default'):
     return db.Key.from_path('blogs', name)
 
-
-
-# class Author(db.Model):
-#     name = db.StringProperty()
 
 
 class Post(db.Model):
@@ -151,7 +148,8 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
-    likes = db.ReferenceProperty(required=True)
+    name = db.ReferenceProperty(User)
+    likes = db.IntegerProperty()
     # author = db.ReferenceProperty(Author)
 
 
@@ -166,6 +164,12 @@ class Post(db.Model):
         self._render_text = self.content.replace('\n', '<br>')
         return render_str("post.html", p=self) # likes=likes
 
+
+class Likes(db.Model):
+    name = db.StringProperty(required=True)
+    post_id = db.IntegerProperty()
+    created = db.DateTimeProperty(auto_now_add=True)
+    last_modified = db.DateTimeProperty(auto_now=True)
 
 ###### moagm udacity mentor code
 
@@ -367,20 +371,58 @@ class DeletePost(BlogHandler):
 
 class LikePost(BlogHandler):
 
-    def get(self, post_id):
+    def get(self):
         if not self.user:
             self.redirect("/login")
         else:
-            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-            post = db.get(key)
-            author = db.get(author_key)
+            self.redirect('/blog')
+
+
+    def post(self):
+        path = self.request.path
+        parts = path.split('/')
+        id = int(parts[4])
+        name = self.request.get('name')
+
+        q = db.Query(Likes)
+        q.filter('post_id =', id).filter('name =', name)
+        created = ''
+        for p in q.run():
+            return self.redirect('/blog')
+            return
+
+        l = Likes(name = name, post_id=id)
+        l.put()
+        key = db.Key.from_path("Post", id, parent=blog_key())
+        posts = db.get(key)
+        if posts == None:
+            return self.redirect('/blog')
+
+        if posts.likes == None:
+            posts.likes = 1
+        else:
+            posts.likes += 1
+        posts.put()
+        self.redirect('/blog')
+
+        # post.likes = post.likes + 1
+        # post.liked_by.append(self.user.name)
+
+        # if self.user.name:
+        #     post.put()
+        #     self.redirect('/blog')
+
+        # else:
+        #     key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+        #     post = db.get(key)
+            # author = db.get(author_key)
 
             # logged_user = self.user.name
 
-            post.likes.append(self.user)
+            # post.likes.name = self.user.name
 
-            post.put()
-            self.redirect('/blog')
+            # post.put()
+            # self.redirect('/blog')
 
 # if author == logged_user or logged_user in post.liked_by
             #     self.redirect('/error')
@@ -389,18 +431,6 @@ class LikePost(BlogHandler):
             #     post.liked_by.append(logged_user)
             #     post.put()
             #     self.redirect('/blog')
-
-# def post(self, post_id):
-    #     key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-    #     post = db.get(key)
-
-    #     post.likes = post.likes + 1
-    #     post.liked_by.append(self.user.name)
-
-    #     if self.user.name:
-    #         post.put()
-    #         self.redirect('/blog')
-
 
 
 

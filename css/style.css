@@ -7,6 +7,8 @@
     color: #2B3752;
     text-align: center;
     padding: 20px;
+    min-width: 400px;
+    min-height: 500px;
     width: 500px;
     height: 600px;
     transition: all 0.5s;
@@ -34,6 +36,7 @@
 
 .enter {
     background-color: #F4F7ED;
+    margin: 0 auto;
 
 }
 

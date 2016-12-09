@@ -4,11 +4,11 @@
 
     {% for p in posts %}
 
-        {{p.like_count}}
-
         {{ p.render() | safe }}
 
-        {{p.author}}
+        <p>Author: {{p.name}}</p>
+        <p>Likes: {{p.likes}}</p>
+
         <br>
             <a href="/blog/{{p.key().id()}}/editpost" class="nav">Edit</a>
 
@@ -17,9 +17,13 @@
 
             <a href="/blog/newcomment" class="nav">Comment</a>
 
-            <a href="/blog/{{p.key().id()}}/like" class="nav">Like</a>
+            <!-- <a href="/blog/{{p.key().id()}}/like" class="nav">Like</a>
+ -->
+            <form action="/blog/{{p.key().id()}}/like" method="post">
+                <input type="hidden" value="{{user.name}}" name="name">
+                <input type="submit" value="Like">
 
-
+            </form>
 
         <br>
         <br>
