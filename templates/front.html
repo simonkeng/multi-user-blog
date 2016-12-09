@@ -6,16 +6,44 @@
 
         {{ p.render() | safe }}
 
-        <p>Author: {{p.name}}</p>
+        <p>Author: {{p.name.name}}</p>
         <p>Likes: {{p.likes}}</p>
 
         <br>
+
+            <h3>Comments</h3>
+            {% for c in comments %}
+
+                <!-- {% if p.key().id() == c.post_id.key().id() %}
+ -->
+                    By {{c.name}}
+                    <br>
+
+                    {{c.content}}
+                    <br>
+                    <br>
+
+
+               <!--  {% endif %} -->
+
+                {% if c.name == user.name %}
+
+                    <a href="/blog/editcomment/{{c.key().id()}}/{{p.key().id()}}">Edit Comment</a>
+                    <br>
+                    <a href="/blog/deletecomment/">Delete Comment</a>
+
+                {% endif %}
+
+
+
+            {% endfor %}
+
             <a href="/blog/{{p.key().id()}}/editpost" class="nav">Edit</a>
 
             <a href="/blog/{{p.key().id()}}/deletepost" class="nav">Delete</a>
 
 
-            <a href="/blog/newcomment" class="nav">Comment</a>
+            <a href="/blog/newcomment/{{p.key().id()}}" class="nav">Comment</a>
 
             <!-- <a href="/blog/{{p.key().id()}}/like" class="nav">Like</a>
  -->
@@ -24,10 +52,8 @@
                 <input type="submit" value="Like">
 
             </form>
-
-        <br>
-        <br>
-
+            <br>
+            <br>
 
     {% endfor %}
 

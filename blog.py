@@ -171,6 +171,20 @@ class Likes(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
 
+
+class Comment(db.Model):
+    content = db.TextProperty(required = True)
+    post_id = db.ReferenceProperty(Post)
+    # post_id = db.IntegerProperty(required = True)
+    name = db.StringProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True )
+    last_modified = db.DateTimeProperty(auto_now = True)
+    likes = db.IntegerProperty(required = False)
+
+    def render(self):
+        self._render_text = self.content.replace('\n', '<br>')
+        return render_str("comment.html", p = self)
+
 ###### moagm udacity mentor code
 
 # class PostLike(db.Model):
@@ -369,29 +383,60 @@ class DeletePost(BlogHandler):
 
 
 
+
+class NewComment(BlogHandler):
+
+    def get(self, post_id):
+        if self.user:
+            self.render("comment.html", postId= post_id)
+        else:
+            self.redirect("/login")
+
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/login')
+        content = self.request.get('content')
+        name= self.request.get('name')
+        created = self.request.get('created')
+
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+
+        posts = db.get(key)
+
+        if posts == None:
+            return self.redirecto('/blog')
+
+        if content:
+            c = Comment(content = content, name=name, post_id= posts)
+            c.put()
+            return self.redirect('/blog')
+        else:
+            error = "subject and content, please!"
+            self.render("comment.html", content=content, error=error)
+
+
+
+
 class LikePost(BlogHandler):
 
-    def get(self):
+    def get(self, post_id):
         if not self.user:
             self.redirect("/login")
         else:
             self.redirect('/blog')
 
 
-    def post(self):
-        path = self.request.path
-        parts = path.split('/')
-        id = int(parts[4])
+    def post(self, post_id):
         name = self.request.get('name')
 
         q = db.Query(Likes)
-        q.filter('post_id =', id).filter('name =', name)
+        q.filter('post_id =', post_id).filter('name =', name)
         created = ''
         for p in q.run():
             return self.redirect('/blog')
             return
 
-        l = Likes(name = name, post_id=id)
+        l = Likes(name = name, post_id=post_id)
         l.put()
         key = db.Key.from_path("Post", id, parent=blog_key())
         posts = db.get(key)
@@ -478,7 +523,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/logout', Logout),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
-                               # ('/blog/newcomment', NewComment),
+                               ('/blog/newcomment/([0-9]+)', NewComment),
                                ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],
