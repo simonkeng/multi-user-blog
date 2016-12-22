@@ -1,4 +1,4 @@
-.enter-cat {
+/*.enter-cat {
     font-size: 200px;
     text-decoration: none !important;
     display: inline-block;
@@ -9,28 +9,74 @@
     padding: 20px;
     min-width: 400px;
     min-height: 500px;
-    width: 500px;
+    width: 700px;
     height: 600px;
     transition: all 0.5s;
     cursor: pointer;
     margin: 5px;
     background: #86EE60;
+    -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+    transition: width 2s, height 2s, transform 2s;
     -webkit-transition-property: background;
        -moz-transition-property: background;
          -o-transition-property: background;
             transition-property: background;
-    -webkit-transition-duration: 1s;
-       -moz-transition-duration: 1s;
-         -o-transition-duration: 1s;
-            transition-duration: 1s;
+    -webkit-transition-property: width, height;
+       -moz-transition-property: width, height;
+         -o-transition-property: width, height;
+            transition-property: width, height;
+    -webkit-transition-duration: 2s;
+       -moz-transition-duration: 2s;
+         -o-transition-duration: 2s;
+            transition-duration: 2s;
     -webkit-transition-timing-function: linear;
        -moz-transition-timing-function: linear;
          -o-transition-timing-function: linear;
             transition-timing-function: linear;
+}*/
+
+.enter-cat {
+    font-size: 50px;
+    font-family: 'Cutive Mono', monospace;
+    width: 200px;
+    height: 200px;
+    color: #2B3752;
+    background: #86EE60;
+    -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+    transition: width 2s, height 2s, transform 2s;
 }
+
 .enter-cat:hover {
   background: #2B3752;
   color: #86EE60;
+  width: 600px;
+  height: 600px;
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  font-size: 150px;
+
+}
+
+.enter-cat-si {
+    font-size: 16px;
+    font-family: 'Cutive Mono', monospace;
+    width: 50px;
+    height: 50px;
+    color: #2B3752;
+    background: #F4F7ED;
+    -webkit-transition: width 2s, height 2s, -webkit-transform 2s;
+    transition: width 2s, height 2s, transform 2s;
+}
+
+.enter-cat-si:hover {
+  background: #2B3752;
+  color: #86EE60;
+  width: 600px;
+  height: 600px;
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  font-size: 190px;
+
 }
 
 

@@ -148,9 +148,9 @@ class Post(db.Model):
     content = db.TextProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
-    name = db.ReferenceProperty(User)
+    name = db.ReferenceProperty(User) # should change to author for clarity
     likes = db.IntegerProperty()
-    # author = db.ReferenceProperty(Author)
+
 
 
     @property
@@ -159,17 +159,20 @@ class Post(db.Model):
 
     # render the blog entry
     # replace \n with <br> makes the html not mess things up
-    def render(self):
+    def render(self, user):
         # likes = self.post_likes(post_id)
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p=self) # likes=likes
+        return render_str("post.html", p=self, user=user) # likes=likes
+
 
 
 class Likes(db.Model):
     name = db.StringProperty(required=True)
     post_id = db.IntegerProperty()
+    comment_id = db.IntegerProperty()
     created = db.DateTimeProperty(auto_now_add=True)
     last_modified = db.DateTimeProperty(auto_now=True)
+
 
 
 class Comment(db.Model):
@@ -201,9 +204,12 @@ class BlogFront(BlogHandler):
     and renders front.html with result of post query"""
 
     def get(self):
+        # au = db.Key.from_path('User', "name", parent=blog_key())
+        # f = db.get(au)
+        comments = Comment.all().order('created')
         posts = db.GqlQuery(
             "select * from Post order by created desc limit 10")
-        self.render('front.html', posts=posts)
+        self.render('front.html', posts=posts, comments=comments)
 
 
 class PostPage(BlogHandler):
@@ -225,19 +231,26 @@ class NewPost(BlogHandler):
     then redirect"""
 
     def get(self):
-        self.render("newpost.html")
+        if self.user:
+            self.render("newpost.html")
+        else:
+            self.redirect("/login")
 
     def post(self):
         if not self.user:
             return self.redirect('/signup')
         subject = self.request.get('subject')
         content = self.request.get('content')
-        # author = self.user.name
+        name = self.request.get('name')
         likes = 0
+        q = User.all().filter('name =', name)
+
+        for name in q.run():
+            pass
 
         if subject and content:
-            p = Post(parent=blog_key(), author=author,
-                subject=subject, content=content, likes=likes)
+            p = Post(parent=blog_key(), subject=subject,
+                            content=content, likes=likes, name=self.user)
             # p.put() to store p in the database
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
@@ -396,7 +409,7 @@ class NewComment(BlogHandler):
         if not self.user:
             self.redirect('/login')
         content = self.request.get('content')
-        name= self.request.get('name')
+        name = self.request.get('name')
         created = self.request.get('created')
 
         key = db.Key.from_path('Post', int(post_id), parent=blog_key())
@@ -404,15 +417,48 @@ class NewComment(BlogHandler):
         posts = db.get(key)
 
         if posts == None:
-            return self.redirecto('/blog')
+            return self.redirect('/blog')
 
         if content:
-            c = Comment(content = content, name=name, post_id= posts)
+            c = Comment(content=content, name=name, post_id=posts)
             c.put()
             return self.redirect('/blog')
         else:
             error = "subject and content, please!"
             self.render("comment.html", content=content, error=error)
+
+
+class EditComment(BlogHandler):
+    def get(self, post_id):
+        if self.user:
+            key = db.Key.from_path('Comment', post_id)
+            comments = db.get(key)
+            if comments == None or comments.name != self.user.name:
+                return self.redirect('/blog')
+            self.render("editcomment.html", comments = comments)
+        else:
+            return self.redirect('/login')
+
+
+    def post(self, post_id):
+        if not self.user:
+            self.redirect('/login')
+        content = self.request.get('content')
+        post_key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        name= self.request.get('name')
+        key = db.Key.from_path('Comment', comment_id)
+        comments = db.get(key)
+        if comments == None or comments.name != self.user.name:
+            return self.redirect('/blog')
+        if content:
+            comments.content = content
+            comments.name = name
+            comments.post_id = post_key
+            comments.put()
+            self.redirect('/blog')
+        else:
+            error = 'You have not written any content'
+            self.render('editcomment.html', content=content, error=error)
 
 
 
@@ -428,15 +474,15 @@ class LikePost(BlogHandler):
 
     def post(self, post_id):
         name = self.request.get('name')
-
         q = db.Query(Likes)
-        q.filter('post_id =', post_id).filter('name =', name)
+        q.filter('post_id =', int(post_id)).filter('name =', name)
         created = ''
         for p in q.run():
             return self.redirect('/blog')
             return
 
-        l = Likes(name = name, post_id=post_id)
+        id = int(post_id)
+        l = Likes(name = name, post_id = id)
         l.put()
         key = db.Key.from_path("Post", id, parent=blog_key())
         posts = db.get(key)
@@ -524,6 +570,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)/editpost', EditPost),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
                                ('/blog/newcomment/([0-9]+)', NewComment),
+                               ('/blog/editcomment/([0-9]+)', EditComment),
                                ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],
