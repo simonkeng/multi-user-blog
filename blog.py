@@ -161,8 +161,9 @@ class Post(db.Model):
     # replace \n with <br> makes the html not mess things up
     def render(self, user):
         # likes = self.post_likes(post_id)
+        comments = Comment.all().filter('post_id =', self).order('-created')
         self._render_text = self.content.replace('\n', '<br>')
-        return render_str("post.html", p=self, user=user) # likes=likes
+        return render_str("post.html", p=self, user=user, comments=comments)
 
 
 
@@ -206,10 +207,9 @@ class BlogFront(BlogHandler):
     def get(self):
         # au = db.Key.from_path('User', "name", parent=blog_key())
         # f = db.get(au)
-        comments = Comment.all().order('created')
         posts = db.GqlQuery(
             "select * from Post order by created desc limit 10")
-        self.render('front.html', posts=posts, comments=comments)
+        self.render('front.html', posts=posts)
 
 
 class PostPage(BlogHandler):
@@ -251,13 +251,16 @@ class NewPost(BlogHandler):
         if subject and content:
             p = Post(parent=blog_key(), subject=subject,
                             content=content, likes=likes, name=self.user)
+            # above: name = self.user - so I can do p.name.name in the
+            # Jinja template post.html
+
             # p.put() to store p in the database
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
             error = 'You did not enter subject or content!'
             self.render("newpost.html", subject=subject, content=content,
-                        error=error)
+                        error=error, comments=comments)
 
 
 # sign up stuff
@@ -355,10 +358,22 @@ class EditPost(BlogHandler):
         self.render("editpost.html", post=post)
 
     def post(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
+
+        # check that user is signed in
         if not self.user:
             return self.redirect('/signup')
+
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+
+        # check to make sure post exists
+        if not post:
+            return self.redirect('/blog')
+
+        # check to make sure the user posted that post
+        if post.name.key().id() != self.user.key().id():
+            return self.redirect('/blog/%s' % str(post.key().id()))
+
         subject = self.request.get('subject')
         content = self.request.get('content')
 
@@ -368,7 +383,6 @@ class EditPost(BlogHandler):
             post.subject = subject
             post.content = content
             post.put()
-
             self.redirect('/blog/%s' % str(post.key().id()))
         else:
             error = 'You did not enter subject or content!'
@@ -463,6 +477,30 @@ class EditComment(BlogHandler):
 
 
 
+class DeleteComment(BlogHandler):
+
+    def get(self, post_id):
+        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        post = db.get(key)
+        if not self.user:
+            self.redirect("/login")
+        else:
+            self.render('deletecomment.html', post_id=id)
+
+    def post(self, post_id):
+        if self.user:
+            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+            post = db.get(key)
+
+            key = db.Key.from_path('Comment', comment_id)
+            comments = db.get(key)
+
+            comments.delete()
+            self.redirect('/blog/')
+
+
+
+
 class LikePost(BlogHandler):
 
     def get(self, post_id):
@@ -495,33 +533,6 @@ class LikePost(BlogHandler):
             posts.likes += 1
         posts.put()
         self.redirect('/blog')
-
-        # post.likes = post.likes + 1
-        # post.liked_by.append(self.user.name)
-
-        # if self.user.name:
-        #     post.put()
-        #     self.redirect('/blog')
-
-        # else:
-        #     key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-        #     post = db.get(key)
-            # author = db.get(author_key)
-
-            # logged_user = self.user.name
-
-            # post.likes.name = self.user.name
-
-            # post.put()
-            # self.redirect('/blog')
-
-# if author == logged_user or logged_user in post.liked_by
-            #     self.redirect('/error')
-            # else:
-            #     post.likes += 1
-            #     post.liked_by.append(logged_user)
-            #     post.put()
-            #     self.redirect('/blog')
 
 
 
@@ -571,6 +582,7 @@ app = webapp2.WSGIApplication([('/', MainPage),
                                ('/blog/([0-9]+)/deletepost', DeletePost),
                                ('/blog/newcomment/([0-9]+)', NewComment),
                                ('/blog/editcomment/([0-9]+)', EditComment),
+                               ('/blog/deletecomment/([0-9]+)', DeleteComment),
                                ('/blog/([0-9]+)/like', LikePost),
                                ('/blog/welcome', BlogWelcome),
                                ],

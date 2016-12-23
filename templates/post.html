@@ -3,7 +3,7 @@
         <div class="post-title">
             {{p.subject}}
         </div>
-
+        <br>
         <div class="post-date">
             {{p.created.strftime("%b %d, %Y")}}
         </div>
@@ -26,10 +26,12 @@
                         <input type="hidden" value="{{user.name}}" name="name">
                         <input type="submit" value="Like">
                     </form>
+
                     <a href="/blog/newcomment/{{p.key().id()}}" class="nav">Comment</a>
 
                 <br>
                 <br>
+
 
                 <h3>Comments</h3>
                 {% for c in comments %}
@@ -49,9 +51,9 @@
 
                     {% if c.name == user.name %}
 
-                        <a href="/blog/editcomment/{{c.key().id()}}/" class="nav">Edit Comment</a>
+                        <a href="/blog/editcomment/{{c.key().id()}}/" class="nav-comments">Edit Comment</a>
                         <br>
-                        <a href="/blog/deletecomment/" class="nav">
+                        <a href="/blog/deletecomment/{{c.key().id()}}/" class="nav-comments">
                         Delete Comment</a>
 
                     {% endif %}
