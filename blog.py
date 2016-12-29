@@ -480,19 +480,19 @@ class EditComment(BlogHandler):
 class DeleteComment(BlogHandler):
 
     def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
+        key = db.Key.from_path('Comment', post_id)
+        comments = db.get(key)
+
+        # key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+        # post = db.get(key)
         if not self.user:
             self.redirect("/login")
         else:
             self.render('deletecomment.html', post_id=id)
 
-    def post(self, post_id):
+    def post(self, comment_id):
         if self.user:
-            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-            post = db.get(key)
-
-            key = db.Key.from_path('Comment', comment_id)
+            key = db.Key.from_path('Comment', int(comment_id))
             comments = db.get(key)
 
             comments.delete()
@@ -504,6 +504,7 @@ class DeleteComment(BlogHandler):
 class LikePost(BlogHandler):
 
     def get(self, post_id):
+
         if not self.user:
             self.redirect("/login")
         else:
@@ -511,7 +512,10 @@ class LikePost(BlogHandler):
 
 
     def post(self, post_id):
-        name = self.request.get('name')
+        if not self.user:
+            return self.redirect("/login")
+
+        name = self.user.name
         q = db.Query(Likes)
         q.filter('post_id =', int(post_id)).filter('name =', name)
         created = ''

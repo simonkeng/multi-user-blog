@@ -6,10 +6,20 @@ handlers:
 - url: /css
   static_dir: css
 
+- url: /js
+  static_dir: js
+
 - url: /.*
   script: blog.app
 
+- url: /images
+  static_dir: images
+
+
 libraries:
+- name: webapp2
+  version: "2.5.2"
+
 - name: jinja2
   version: latest
 

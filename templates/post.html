@@ -11,7 +11,8 @@
     <div class="post-content">
         {{p._render_text | safe}}
     </div>
-    By: {{p.name.name}}
+        <br>
+        By: {{p.name.name}}
         <br>
         <p>Likes: {{p.likes}} </p>
 
@@ -23,7 +24,7 @@
 
                 {% elif p.name.name != user.name %}
                     <form action="/blog/{{p.key().id()}}/like" method="post">
-                        <input type="hidden" value="{{user.name}}" name="name">
+                        <!-- <input type="hidden" value="{{user.name}}" name="name"> -->
                         <input type="submit" value="Like">
                     </form>
 
@@ -51,9 +52,9 @@
 
                     {% if c.name == user.name %}
 
-                        <a href="/blog/editcomment/{{c.key().id()}}/" class="nav-comments">Edit Comment</a>
+                        <a href="/blog/editcomment/{{c.key().id()}}" class="nav-comments">Edit Comment</a>
                         <br>
-                        <a href="/blog/deletecomment/{{c.key().id()}}/" class="nav-comments">
+                        <a href="/blog/deletecomment/{{c.key().id()}}" class="nav-comments">
                         Delete Comment</a>
 
                     {% endif %}
