@@ -393,20 +393,22 @@ class EditPost(BlogHandler):
 class DeletePost(BlogHandler):
 
     def get(self, post_id):
-        key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        post = db.get(key)
-        if not self.user:
-            self.redirect("/login")
-        else:
-            self.render('deletepost.html', post_id=id)
+        if user and p.name.key().id() == user.key().id():
+            key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            post = db.get(key)
+            if not self.user:
+                self.redirect("/login")
+            else:
+                self.render('deletepost.html', post_id=id)
 
     def post(self, post_id):
-        if self.user:
-            key = db.Key.from_path("Post", int(post_id), parent=blog_key())
-            post = db.get(key)
+        if user and p.name.key().id() == user.key().id():
+            if self.user:
+                key = db.Key.from_path("Post", int(post_id), parent=blog_key())
+                post = db.get(key)
 
-            post.delete()
-            self.redirect('/blog/')
+                post.delete()
+                self.redirect('/blog/')
 
 
 
@@ -414,7 +416,7 @@ class DeletePost(BlogHandler):
 class NewComment(BlogHandler):
 
     def get(self, post_id):
-        if self.user:
+        if self.user and post:
             self.render("comment.html", postId= post_id)
         else:
             self.redirect("/login")
@@ -480,36 +482,31 @@ class EditComment(BlogHandler):
 class DeleteComment(BlogHandler):
 
     def get(self, post_id):
-        key = db.Key.from_path('Comment', post_id)
-        comments = db.get(key)
+        if user and p.name.key().id() == user.key().id():
 
-        # key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-        # post = db.get(key)
-        if not self.user:
-            self.redirect("/login")
-        else:
-            self.render('deletecomment.html', post_id=id)
-
-    def post(self, comment_id):
-        if self.user:
-            key = db.Key.from_path('Comment', int(comment_id))
+            key = db.Key.from_path('Comment', post_id)
             comments = db.get(key)
 
-            comments.delete()
-            self.redirect('/blog/')
+            # key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+            # post = db.get(key)
+            if not self.user:
+                self.redirect("/login")
+            else:
+                self.render('deletecomment.html', post_id=id)
+
+    def post(self, comment_id):
+        if user and p.name.key().id() == user.key().id():
+            if self.user:
+                key = db.Key.from_path('Comment', int(comment_id))
+                comments = db.get(key)
+
+                comments.delete()
+                self.redirect('/blog/')
 
 
 
 
 class LikePost(BlogHandler):
-
-    def get(self, post_id):
-
-        if not self.user:
-            self.redirect("/login")
-        else:
-            self.redirect('/blog')
-
 
     def post(self, post_id):
         if not self.user:
