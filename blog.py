@@ -463,7 +463,7 @@ class EditComment(BlogHandler):
         content = self.request.get('content')
         # post_key = db.Key.from_path('Post', int(post_id), parent=blog_key())
         name= self.request.get('name')
-        key = db.Key.from_path('Comment', comment_id)
+        key = db.Key.from_path('Comment', int(comment_id))
         comments = db.get(key)
         if comments == None or comments.name != self.user.name:
             return self.redirect('/blog')
