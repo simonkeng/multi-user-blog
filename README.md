@@ -1,6 +1,6 @@
 ### View Hosted Site
 
-Visit https://multi-user-blog-149019.appspot.com/blog
+Visit https://multi-user-blog-149019.appspot.com/
 
 
 ### Run On Your Machine
